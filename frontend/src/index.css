@@ -1,0 +1,601 @@
+:root {
+  /* Palette — servizio di soccorso in mare */
+  --blu-profondo: #0A2F4E;
+  --blu-adriatico: #1B6B93;
+  --bianco-schiuma: #FBFBF9;
+  --sabbia: #EFE7D8;
+  --rosso-allerta: #D6483B;
+  --ambra-segnale: #E3A23D;
+  --verde-sicurezza: #2F8F5B;
+  --grigio-testo: #3C4A52;
+  --grigio-tenue: #7E8C93;
+  --bordo: #DDD6C6;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-corpo: 'Inter', -apple-system, sans-serif;
+  --font-orario: 'IBM Plex Mono', monospace;
+
+  --raggio: 14px;
+  --ombra: 0 2px 10px rgba(10, 47, 78, 0.08);
+  --ombra-forte: 0 8px 30px rgba(10, 47, 78, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bianco-schiuma);
+  color: var(--grigio-testo);
+  font-family: var(--font-corpo);
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: transform 0.08s ease, opacity 0.15s ease;
+}
+button:active { transform: scale(0.97); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 3px solid var(--blu-adriatico);
+  outline-offset: 2px;
+}
+
+a { color: var(--blu-adriatico); }
+
+.btn-primaria {
+  background: var(--blu-profondo);
+  color: var(--bianco-schiuma);
+  padding: 14px 22px;
+  font-size: 15px;
+}
+.btn-primaria:hover:not(:disabled) { background: #0d3a60; }
+
+.btn-secondaria {
+  background: transparent;
+  color: var(--blu-profondo);
+  border: 1.5px solid var(--blu-profondo);
+  padding: 12px 20px;
+  font-size: 15px;
+}
+.btn-secondaria:hover:not(:disabled) { background: rgba(10,47,78,0.05); }
+
+.btn-pericolo {
+  background: transparent;
+  color: var(--rosso-allerta);
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.btn-pericolo:hover:not(:disabled) { background: rgba(214,72,59,0.08); }
+
+.btn-testo {
+  background: transparent;
+  color: var(--blu-adriatico);
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+input[type="text"], input[type="tel"], input[type="password"], textarea {
+  border: 1.5px solid var(--bordo);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  width: 100%;
+  background: white;
+  color: var(--grigio-testo);
+}
+input:focus, textarea:focus { border-color: var(--blu-adriatico); outline: none; }
+
+.card {
+  background: white;
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+  border: 1px solid var(--bordo);
+}
+
+.contenitore {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 18px 40px;
+}
+
+.eyebrow {
+  font-family: var(--font-orario);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blu-adriatico);
+  font-weight: 600;
+}
+
+/* ===== Header / intestazione app ===== */
+.app-header {
+  background: var(--blu-profondo);
+  color: var(--bianco-schiuma);
+  padding: 18px 18px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.app-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--rosso-allerta) 0 22px,
+    var(--bianco-schiuma) 22px 44px
+  );
+  opacity: 0.9;
+}
+.app-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.app-titolo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+.app-titolo small {
+  display: block;
+  font-family: var(--font-orario);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: #9FC1D6;
+  margin-top: 3px;
+}
+
+/* ===== Home / accesso ===== */
+.home-hero {
+  min-height: 100dvh;
+  background: var(--blu-profondo);
+  color: var(--bianco-schiuma);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+}
+.home-anello {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 10px solid var(--bianco-schiuma);
+  position: relative;
+  margin-bottom: 26px;
+}
+.home-anello::before, .home-anello::after,
+.home-anello .tacca-3, .home-anello .tacca-4 {
+  content: '';
+  position: absolute;
+  background: var(--rosso-allerta);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+.home-anello::before { top: -6px; left: 50%; transform: translateX(-50%); }
+.home-anello::after { bottom: -6px; left: 50%; transform: translateX(-50%); }
+
+.home-eyebrow {
+  font-family: var(--font-orario);
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  color: #9FC1D6;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.home-titolo {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 8px;
+}
+.home-sottotitolo {
+  font-size: 15px;
+  color: #C9DCE8;
+  margin: 0 0 40px;
+  max-width: 320px;
+}
+.home-azioni {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+.home-azioni .btn-primaria {
+  background: var(--bianco-schiuma);
+  color: var(--blu-profondo);
+  padding: 16px;
+  font-size: 16px;
+}
+.home-azioni .btn-secondaria {
+  border-color: rgba(251,251,249,0.5);
+  color: var(--bianco-schiuma);
+  padding: 15px;
+}
+.home-azioni .btn-secondaria:hover { background: rgba(255,255,255,0.08); }
+
+/* ===== Form auth (registrazione/login) ===== */
+.form-auth {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px;
+  max-width: 380px;
+  margin: 0 auto;
+  gap: 18px;
+}
+.form-auth h1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  margin: 0 0 4px;
+  color: var(--blu-profondo);
+}
+.form-auth p.hint {
+  color: var(--grigio-tenue);
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grigio-testo);
+}
+.pin-input {
+  letter-spacing: 0.5em;
+  font-family: var(--font-orario);
+  font-size: 22px;
+  text-align: center;
+}
+.errore-form {
+  background: rgba(214,72,59,0.08);
+  color: var(--rosso-allerta);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+/* ===== Navigazione settimana ===== */
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 6px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.week-nav-label {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--blu-profondo);
+  text-align: center;
+}
+.week-nav-freccia {
+  background: white;
+  border: 1px solid var(--bordo);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blu-profondo);
+  font-size: 18px;
+}
+
+/* ===== Giorni ===== */
+.giorno-card {
+  margin-top: 14px;
+  padding: 16px;
+}
+.giorno-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.giorno-nome {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--blu-profondo);
+  text-transform: capitalize;
+}
+.giorno-data {
+  font-family: var(--font-orario);
+  font-size: 12px;
+  color: var(--grigio-tenue);
+}
+.badge-stato {
+  font-family: var(--font-orario);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 20px;
+}
+.badge-scoperto { background: rgba(214,72,59,0.12); color: var(--rosso-allerta); }
+.badge-parziale { background: rgba(227,162,61,0.16); color: #A8701D; }
+.badge-coperto { background: rgba(47,143,91,0.14); color: var(--verde-sicurezza); }
+.badge-manifestazione { background: rgba(27,107,147,0.14); color: var(--blu-adriatico); }
+
+/* Barra di copertura oraria 10:00–18:00 */
+.gauge {
+  display: flex;
+  height: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--sabbia);
+  margin-bottom: 12px;
+}
+.gauge-segmento { height: 100%; }
+
+.giorno-manifestazione {
+  background: rgba(27,107,147,0.08);
+  border-left: 3px solid var(--blu-adriatico);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.giorno-manifestazione strong { color: var(--blu-adriatico); }
+
+.turno-riga {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid #F0EBE0;
+}
+.turno-riga:first-of-type { border-top: none; }
+.turno-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--blu-profondo);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.turno-riga.riserva .turno-avatar { background: var(--ambra-segnale); }
+.turno-info { flex: 1; min-width: 0; }
+.turno-nome { font-size: 14.5px; font-weight: 600; color: var(--grigio-testo); }
+.turno-orario {
+  font-family: var(--font-orario);
+  font-size: 12.5px;
+  color: var(--grigio-tenue);
+}
+.turno-nota { font-size: 12.5px; color: var(--grigio-tenue); font-style: italic; margin-top: 1px; }
+.turno-tag-riserva {
+  font-family: var(--font-orario);
+  font-size: 10px;
+  color: var(--ambra-segnale);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.turno-azioni { display: flex; gap: 4px; }
+.icona-btn {
+  background: transparent;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--grigio-tenue);
+  font-size: 14px;
+}
+.icona-btn:hover { background: var(--sabbia); }
+
+.giorno-vuoto {
+  text-align: center;
+  padding: 18px 0 6px;
+  color: var(--grigio-tenue);
+  font-size: 13.5px;
+}
+
+.btn-aggiungi-turno {
+  width: 100%;
+  margin-top: 12px;
+  background: var(--sabbia);
+  color: var(--blu-profondo);
+  padding: 11px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+.btn-aggiungi-turno:hover { background: #e6dcc4; }
+.btn-aggiungi-turno.pieno {
+  background: rgba(214,72,59,0.08);
+  color: var(--rosso-allerta);
+}
+
+/* ===== Modale iscrizione turno ===== */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(10,47,78,0.45);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 50;
+  animation: comparsa 0.15s ease;
+}
+@keyframes comparsa { from { opacity: 0; } to { opacity: 1; } }
+.modale {
+  background: white;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 22px 28px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+@media (min-width: 560px) {
+  .overlay { align-items: center; }
+  .modale { border-radius: 18px; }
+}
+.modale h2 {
+  font-family: var(--font-display);
+  color: var(--blu-profondo);
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+.modale p.sotto { color: var(--grigio-tenue); font-size: 13.5px; margin: 0 0 18px; }
+.tab-turno {
+  display: flex;
+  background: var(--sabbia);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 16px;
+}
+.tab-turno button {
+  flex: 1;
+  background: transparent;
+  color: var(--grigio-testo);
+  padding: 9px;
+  font-size: 13.5px;
+  border-radius: 8px;
+}
+.tab-turno button.attivo {
+  background: var(--blu-profondo);
+  color: white;
+}
+.riga-orari { display: flex; gap: 10px; }
+.riga-orari .campo { flex: 1; }
+.modale-azioni {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.modale-azioni button { flex: 1; }
+
+.avviso-riserva {
+  background: rgba(227,162,61,0.12);
+  color: #A8701D;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* ===== Bottom nav ===== */
+.tab-bar {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  border-top: 1px solid var(--bordo);
+  display: flex;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  z-index: 20;
+}
+.tab-bar button {
+  flex: 1;
+  background: transparent;
+  color: var(--grigio-tenue);
+  padding: 8px 4px;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-radius: 10px;
+  position: relative;
+}
+.tab-bar button.attivo { color: var(--blu-profondo); }
+.tab-bar .icona { font-size: 19px; }
+.pallino-notifica {
+  position: absolute;
+  top: 2px; right: 22%;
+  width: 8px; height: 8px;
+  background: var(--rosso-allerta);
+  border-radius: 50%;
+  border: 1.5px solid white;
+}
+
+/* ===== Area gestore ===== */
+.sezione-titolo {
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--blu-profondo);
+  margin: 26px 0 12px;
+}
+.riepilogo-griglia {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.riepilogo-giorno {
+  text-align: center;
+  padding: 10px 2px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+.riepilogo-giorno .num { font-family: var(--font-orario); font-size: 16px; font-weight: 700; display: block; }
+
+.lista-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-top: 1px solid #F0EBE0;
+}
+.lista-item:first-child { border-top: none; }
+
+.notifica-item {
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid var(--bordo);
+  margin-bottom: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.notifica-item.non-letta { border-left: 3px solid var(--blu-adriatico); }
+.notifica-testo { flex: 1; font-size: 13.5px; }
+.notifica-data { font-family: var(--font-orario); font-size: 11px; color: var(--grigio-tenue); margin-top: 3px; }
+
+.stato-vuoto {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--grigio-tenue);
+}
+.stato-vuoto .emoji { font-size: 34px; margin-bottom: 10px; }
+
+.caricamento {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--grigio-tenue);
+  font-family: var(--font-orario);
+  font-size: 13px;
+}
+
+.link-esci {
+  display: block;
+  text-align: center;
+  margin-top: 24px;
+  color: var(--grigio-tenue);
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
