@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="home-hero">
       <div className="home-anello" aria-hidden="true"></div>
-      <div className="home-eyebrow">Servizio Nazionale Salvamento</div>
+      <div className="home-eyebrow">Società Nazionale Salvamento</div>
       <h1 className="home-titolo">SNS — Portonovo</h1>
       <p className="home-sottotitolo">Gestione turni soccorritori</p>
 
