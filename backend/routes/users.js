@@ -26,4 +26,19 @@ router.delete('/:id', richiedeLogin, richiedeGestore, async (req, res) => {
   }
 });
 
+// PATCH /api/utenti/:id/ruolo  → promuove/retrocede un utente (solo gestore)
+router.patch('/:id/ruolo', richiedeLogin, richiedeGestore, async (req, res) => {
+  try {
+    const { ruolo } = req.body;
+    if (!['volontario', 'gestore'].includes(ruolo)) {
+      return res.status(400).json({ errore: 'Ruolo non valido' });
+    }
+    const utente = await User.findByIdAndUpdate(req.params.id, { ruolo }, { new: true });
+    if (!utente) return res.status(404).json({ errore: 'Utente non trovato' });
+    res.json({ id: utente._id, nome: utente.nome, ruolo: utente.ruolo });
+  } catch (err) {
+    res.status(500).json({ errore: 'Errore nell\'aggiornamento del ruolo' });
+  }
+});
+
 module.exports = router;
