@@ -24,6 +24,15 @@ export default function UsersList() {
 
   useEffect(() => { carica(); }, []);
 
+  async function cambiaRuolo(u, nuovoRuolo) {
+    const messaggio = nuovoRuolo === 'gestore'
+      ? `Rendere ${u.nome} un gestore? Potrà vedere iscritti, notifiche e riepiloghi.`
+      : `Togliere a ${u.nome} i permessi da gestore?`;
+    if (!window.confirm(messaggio)) return;
+    await api.patch(`/api/utenti/${u._id}/ruolo`, { ruolo: nuovoRuolo });
+    setUtenti((list) => list.map((x) => (x._id === u._id ? { ...x, ruolo: nuovoRuolo } : x)));
+  }
+
   async function elimina(u) {
     if (!window.confirm(`Eliminare ${u.nome}? Verranno rimossi anche tutti i suoi turni.`)) return;
     await api.delete(`/api/utenti/${u._id}`);
@@ -56,7 +65,18 @@ export default function UsersList() {
                   </div>
                 </div>
                 {u._id !== utente?.id && (
-                  <button className="btn-pericolo" onClick={() => elimina(u)}>Elimina</button>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    {u.ruolo === 'volontario' ? (
+                      <button className="btn-testo" style={{ fontSize: 12.5 }} onClick={() => cambiaRuolo(u, 'gestore')}>
+                        Rendi gestore
+                      </button>
+                    ) : (
+                      <button className="btn-testo" style={{ fontSize: 12.5 }} onClick={() => cambiaRuolo(u, 'volontario')}>
+                        Rimuovi da gestore
+                      </button>
+                    )}
+                    <button className="btn-pericolo" onClick={() => elimina(u)}>Elimina</button>
+                  </div>
                 )}
               </div>
             ))}

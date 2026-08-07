@@ -42,7 +42,11 @@ export default function Gestore() {
   useEffect(() => { carica(); }, [carica]);
 
   async function salvaManifestazione() {
-    await api.post('/api/giornate-speciali', formManifestazione);
+    await api.post('/api/giornate-speciali', {
+      data: formManifestazione.dataStr,
+      titolo: formManifestazione.titolo,
+      descrizione: formManifestazione.descrizione
+    });
     setFormManifestazione(null);
     carica();
   }
