@@ -58,32 +58,29 @@ router.post('/registrati', async (req, res) => {
   }
 });
 
-// LOGIN — utente già registrato
+// LOGIN — utente già registrato (solo PIN, il PIN è univoco per ciascuno)
 router.post('/accedi', async (req, res) => {
   try {
-    const { nome, pin } = req.body;
-    if (!nome || !pin) {
-      return res.status(400).json({ errore: 'Inserisci nome e PIN' });
+    const { pin } = req.body;
+    if (!pin || !/^\d{4}$/.test(pin)) {
+      return res.status(400).json({ errore: 'Inserisci il tuo PIN a 4 cifre' });
     }
 
-    const utente = await User.findOne({
-      nome: new RegExp(`^${nome.trim()}$`, 'i'),
-      attivo: true
-    });
-
-    if (!utente) {
-      return res.status(401).json({ errore: 'Nome o PIN non corretti' });
+    const utenti = await User.find({ attivo: true });
+    let utenteTrovato = null;
+    for (const u of utenti) {
+      const uguale = await bcrypt.compare(pin, u.pin);
+      if (uguale) { utenteTrovato = u; break; }
     }
 
-    const pinValido = await bcrypt.compare(pin, utente.pin);
-    if (!pinValido) {
-      return res.status(401).json({ errore: 'Nome o PIN non corretti' });
+    if (!utenteTrovato) {
+      return res.status(401).json({ errore: 'PIN non riconosciuto' });
     }
 
-    const token = creaToken(utente);
+    const token = creaToken(utenteTrovato);
     res.json({
       token,
-      utente: { id: utente._id, nome: utente.nome, ruolo: utente.ruolo }
+      utente: { id: utenteTrovato._id, nome: utenteTrovato.nome, ruolo: utenteTrovato.ruolo }
     });
   } catch (err) {
     console.error(err);
