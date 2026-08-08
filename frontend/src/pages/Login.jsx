@@ -4,7 +4,6 @@ import api from '../api';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  const [nome, setNome] = useState('');
   const [pin, setPin] = useState('');
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
@@ -14,9 +13,15 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
+
+    if (!/^\d{4}$/.test(pin)) {
+      setErrore('Inserisci il tuo PIN a 4 cifre');
+      return;
+    }
+
     setCaricamento(true);
     try {
-      const { data } = await api.post('/api/auth/accedi', { nome, pin });
+      const { data } = await api.post('/api/auth/accedi', { pin });
       accedi(data.token, data.utente);
       navigate('/calendario');
     } catch (err) {
@@ -30,23 +35,11 @@ export default function Login() {
     <div className="form-auth">
       <div>
         <h1>Bentornato</h1>
-        <p className="hint">Inserisci il nome usato in fase di registrazione e il tuo PIN.</p>
+        <p className="hint">Inserisci il tuo PIN per accedere.</p>
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {errore && <div className="errore-form">{errore}</div>}
-
-        <div className="campo">
-          <label htmlFor="nome">Nome e cognome</label>
-          <input
-            id="nome"
-            type="text"
-            placeholder="Es. Mario Rossi"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            autoComplete="name"
-          />
-        </div>
 
         <div className="campo">
           <label htmlFor="pin">PIN</label>
@@ -57,6 +50,7 @@ export default function Login() {
             inputMode="numeric"
             maxLength={4}
             placeholder="••••"
+            autoFocus
             value={pin}
             onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
           />
