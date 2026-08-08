@@ -105,6 +105,19 @@ async function creaNotificaPerGestori(tipo, messaggio, userId) {
   return notifiche;
 }
 
+// GET /api/turni/miei  → tutti i turni futuri (da oggi in poi) dell'utente loggato
+router.get('/miei', richiedeLogin, async (req, res) => {
+  try {
+    const oggi = new Date().toISOString().slice(0, 10);
+    const turni = await Shift.find({ userId: req.utente.id, data: { $gte: oggi } })
+      .sort({ data: 1, oraInizio: 1 });
+    res.json(turni);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errore: 'Errore nel recupero dei tuoi turni' });
+  }
+});
+
 // GET /api/turni?dal=YYYY-MM-DD&al=YYYY-MM-DD  → turni di un intervallo (settimana)
 router.get('/', richiedeLogin, async (req, res) => {
   try {
