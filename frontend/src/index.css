@@ -340,16 +340,43 @@ input:focus, textarea:focus { border-color: var(--blu-adriatico); outline: none;
 .badge-coperto { background: rgba(47,143,91,0.14); color: var(--verde-sicurezza); }
 .badge-manifestazione { background: rgba(27,107,147,0.14); color: var(--blu-adriatico); }
 
-/* Barra di copertura oraria 10:00–18:00 */
+/* Barra di copertura oraria 10:00–18:00 — rosso = occupato, verde = libero */
 .gauge {
   display: flex;
-  height: 10px;
-  border-radius: 6px;
-  overflow: hidden;
-  background: var(--sabbia);
-  margin-bottom: 12px;
+  gap: 3px;
+  height: 16px;
+  margin-bottom: 6px;
 }
-.gauge-segmento { height: 100%; }
+.gauge-segmento {
+  flex: 1;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--verde-sicurezza);
+  position: relative;
+  overflow: hidden;
+}
+.gauge-occupato {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: var(--rosso-allerta);
+  border-radius: 4px 0 0 4px;
+  transition: width 0.2s ease;
+}
+.gauge-legenda {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--grigio-tenue);
+  margin-bottom: 14px;
+}
+.gauge-legenda .pallino {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+.pallino-rosso { background: var(--rosso-allerta); }
+.pallino-verde { background: var(--verde-sicurezza); }
 
 .giorno-manifestazione {
   background: rgba(27,107,147,0.08);
