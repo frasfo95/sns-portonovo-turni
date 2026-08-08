@@ -349,7 +349,7 @@ input:focus, textarea:focus { border-color: var(--blu-adriatico); outline: none;
 }
 .corsia-riga {
   display: flex;
-  gap: 2px;
+  gap: 0;
 }
 .corsia-segmento {
   height: 28px;
