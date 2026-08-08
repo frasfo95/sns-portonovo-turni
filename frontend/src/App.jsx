@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Calendar from './pages/Calendar';
+import MyShifts from './pages/MyShifts';
 import Gestore from './pages/Gestore';
 import Notifications from './pages/Notifications';
 import UsersList from './pages/UsersList';
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/registrati" element={<Register />} />
           <Route path="/accedi" element={<Login />} />
           <Route path="/calendario" element={<RichiedeLogin><Calendar /></RichiedeLogin>} />
+          <Route path="/miei-turni" element={<RichiedeLogin><MyShifts /></RichiedeLogin>} />
           <Route path="/gestore" element={<RichiedeGestore><Gestore /></RichiedeGestore>} />
           <Route path="/notifiche" element={<RichiedeGestore><Notifications /></RichiedeGestore>} />
           <Route path="/iscritti" element={<RichiedeGestore><UsersList /></RichiedeGestore>} />
