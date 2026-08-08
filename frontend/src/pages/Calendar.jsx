@@ -50,14 +50,37 @@ export default function Calendar() {
     setAvvisoRiserva('');
     if (modale.turnoEsistente) {
       await api.put(`/api/turni/${modale.turnoEsistente._id}`, payload);
-    } else {
-      const { data } = await api.post('/api/turni', { data: modale.dataStr, ...payload });
-      if (data.stato === 'riserva') {
-        setAvvisoRiserva('Il turno era già completo per quell\'orario: sei stato inserito come riserva. Riceverai una notifica se dovesse liberarsi un posto.');
-      }
+      setModale(null);
+      carica();
+      return;
+    }
+
+    const { data } = await api.post('/api/turni', { data: modale.dataStr, ...payload });
+
+    if (data.richiedeScelta) {
+      // Il turno completo non è disponibile: teniamo il modale aperto per proporre le fasce libere
+      setModale((m) => ({ ...m, scelta: data, ultimoPayload: payload }));
+      return;
+    }
+
+    if (data.stato === 'riserva') {
+      setAvvisoRiserva('Il turno era già completo per quell\'orario: sei stato inserito come riserva. Riceverai una notifica se dovesse liberarsi un posto.');
     }
     setModale(null);
     carica();
+  }
+
+  async function handleConfermaFinestra(finestra) {
+    await handleSalvaTurno({
+      oraInizio: finestra.oraInizio,
+      oraFine: finestra.oraFine,
+      note: modale.ultimoPayload?.note || '',
+      turnoCompleto: false
+    });
+  }
+
+  async function handleForzaRiserva() {
+    await handleSalvaTurno({ ...modale.ultimoPayload, forzaRiserva: true });
   }
 
   async function handleElimina(turno) {
@@ -109,8 +132,11 @@ export default function Calendar() {
           dataStr={modale.dataStr}
           dataLeggibile={`${nomeGiorno(new Date(modale.dataStr + 'T00:00:00'))} ${dataBreve(new Date(modale.dataStr + 'T00:00:00'))}`}
           turnoEsistente={modale.turnoEsistente}
+          scelta={modale.scelta}
           onChiudi={() => setModale(null)}
           onSalva={handleSalvaTurno}
+          onConfermaFinestra={handleConfermaFinestra}
+          onForzaRiserva={handleForzaRiserva}
         />
       )}
 
