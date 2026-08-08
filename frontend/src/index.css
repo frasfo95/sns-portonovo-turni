@@ -340,43 +340,93 @@ input:focus, textarea:focus { border-color: var(--blu-adriatico); outline: none;
 .badge-coperto { background: rgba(47,143,91,0.14); color: var(--verde-sicurezza); }
 .badge-manifestazione { background: rgba(27,107,147,0.14); color: var(--blu-adriatico); }
 
-/* Barra di copertura oraria 10:00–18:00 — rosso = occupato, verde = libero */
-.gauge {
+/* Corsie turno — una per ciascuno dei 5 posti, rosso = occupato, verde tratteggiato = libero */
+.corsie-container {
   display: flex;
-  gap: 3px;
-  height: 16px;
-  margin-bottom: 6px;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 4px;
 }
-.gauge-segmento {
-  flex: 1;
-  height: 100%;
-  border-radius: 4px;
-  background: var(--verde-sicurezza);
-  position: relative;
+.corsia-riga {
+  display: flex;
+  gap: 2px;
+}
+.corsia-segmento {
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 9px;
   overflow: hidden;
+  min-width: 0;
 }
-.gauge-occupato {
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
+.corsia-segmento.occupato {
   background: var(--rosso-allerta);
-  border-radius: 4px 0 0 4px;
-  transition: width 0.2s ease;
 }
-.gauge-legenda {
-  display: flex;
-  gap: 16px;
+.corsia-segmento.libero {
+  background: transparent;
+  border: 1.5px dashed var(--bordo);
+}
+.corsia-nome {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--bianco-schiuma);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.corsia-nome-libero {
   font-size: 11px;
   color: var(--grigio-tenue);
-  margin-bottom: 14px;
 }
-.gauge-legenda .pallino {
-  display: inline-block;
-  width: 8px; height: 8px;
+.corsia-azioni {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+.corsia-icona-mini {
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  margin-right: 4px;
+  background: rgba(251,251,249,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  color: var(--bianco-schiuma);
+  flex-shrink: 0;
+  padding: 0;
 }
-.pallino-rosso { background: var(--rosso-allerta); }
-.pallino-verde { background: var(--verde-sicurezza); }
+.corsia-icona-mini:hover { background: rgba(251,251,249,0.35); }
+.corsia-nota-bubble {
+  margin: 4px 4px 0;
+  background: white;
+  border: 1px solid var(--bordo);
+  border-left: 3px solid var(--ambra-segnale);
+  border-radius: 8px;
+  padding: 7px 11px;
+  font-size: 12px;
+  color: var(--grigio-testo);
+  font-style: italic;
+}
+.ore-tacche {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-orario);
+  font-size: 9.5px;
+  color: var(--grigio-tenue);
+  margin: 4px 2px 14px;
+}
+.riserva-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(227,162,61,0.12);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
 
 .giorno-manifestazione {
   background: rgba(27,107,147,0.08);
