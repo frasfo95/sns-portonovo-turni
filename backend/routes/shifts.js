@@ -47,7 +47,53 @@ function calcolaMaxSovrapposizione(turniConfermati, nuovoInizio, nuovoFine) {
   return max;
 }
 
-async function creaNotificaPerGestori(tipo, messaggio, userId) {
+function minutiInOrario(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+// Calcola le fasce orarie, dentro l'intervallo richiesto, dove c'è ancora posto (meno di 5 persone)
+function calcolaFinestreLibere(turniConfermati, inizio, fine) {
+  const ni = orarioInMinuti(inizio);
+  const nf = orarioInMinuti(fine);
+
+  const punti = new Set([ni, nf]);
+  turniConfermati.forEach(t => {
+    const ti = orarioInMinuti(t.oraInizio);
+    const tf = orarioInMinuti(t.oraFine);
+    if (ti > ni && ti < nf) punti.add(ti);
+    if (tf > ni && tf < nf) punti.add(tf);
+  });
+
+  const ordinati = Array.from(punti).sort((a, b) => a - b);
+  const finestre = [];
+  let inizioLibero = null;
+
+  for (let i = 0; i < ordinati.length - 1; i++) {
+    const a = ordinati[i];
+    const b = ordinati[i + 1];
+    const meta = (a + b) / 2;
+    const conteggio = turniConfermati.filter(t => {
+      const ti = orarioInMinuti(t.oraInizio);
+      const tf = orarioInMinuti(t.oraFine);
+      return meta >= ti && meta < tf;
+    }).length;
+
+    if (conteggio < CAPIENZA_MAX) {
+      if (inizioLibero === null) inizioLibero = a;
+    } else if (inizioLibero !== null) {
+      finestre.push([inizioLibero, a]);
+      inizioLibero = null;
+    }
+  }
+  if (inizioLibero !== null) finestre.push([inizioLibero, ordinati[ordinati.length - 1]]);
+
+  // scarta finestre troppo piccole (meno di 15 minuti, non utili in pratica)
+  return finestre
+    .filter(([a, b]) => b - a >= 15)
+    .map(([a, b]) => ({ oraInizio: minutiInOrario(a), oraFine: minutiInOrario(b) }));
+}
   const gestori = await User.find({ ruolo: 'gestore' });
   const notifiche = await Promise.all(
     gestori.map(g =>
@@ -79,7 +125,7 @@ router.get('/', richiedeLogin, async (req, res) => {
 // POST /api/turni  → iscrizione a un turno
 router.post('/', richiedeLogin, async (req, res) => {
   try {
-    const { data, oraInizio, oraFine, note, turnoCompleto } = req.body;
+    const { data, oraInizio, oraFine, note, turnoCompleto, forzaRiserva } = req.body;
     const utenteId = req.utente.id;
 
     if (!data) return res.status(400).json({ errore: 'Data mancante' });
@@ -100,12 +146,21 @@ router.post('/', richiedeLogin, async (req, res) => {
     const turniConfermati = await Shift.find({ data, stato: 'confermato' });
     const maxSovrapposizione = calcolaMaxSovrapposizione(turniConfermati, inizio, fine);
 
+    // Se il turno richiesto non è interamente disponibile, ma una parte sì,
+    // proponiamo quella fascia invece di mettere subito in riserva per tutto l'orario
+    if (maxSovrapposizione > CAPIENZA_MAX && !forzaRiserva) {
+      const finestreLibere = calcolaFinestreLibere(turniConfermati, inizio, fine);
+      if (finestreLibere.length > 0) {
+        return res.json({ richiedeScelta: true, finestreLibere });
+      }
+    }
+
     const anno = new Date(data).getFullYear();
     let stato = 'confermato';
     let ordineRiserva = null;
 
     if (maxSovrapposizione > CAPIENZA_MAX) {
-      // Posto pieno per quella fascia oraria → iscrizione come riserva
+      // Nessuna fascia libera (o l'utente ha scelto comunque di attendere) → iscrizione come riserva
       const riserveEsistenti = await Shift.countDocuments({ data, stato: 'riserva' });
       stato = 'riserva';
       ordineRiserva = riserveEsistenti + 1;
