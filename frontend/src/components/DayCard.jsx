@@ -4,7 +4,6 @@ import { nomeGiorno, dataBreve, iniziali } from '../utils/dates';
 const ORARIO_INIZIO = 10 * 60; // 10:00 in minuti
 const ORARIO_FINE = 18 * 60;   // 18:00 in minuti
 const CAPIENZA_MAX = 5;
-const ORE_MARCA = [10, 11, 12, 13, 14, 15, 16, 17, 18];
 
 function orarioInMinuti(orario) {
   const [h, m] = orario.split(':').map(Number);
@@ -141,17 +140,11 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
       </div>
 
       <div className="ore-tacche">
-        {ORE_MARCA.map((ora, i) => (
-          <span
-            key={ora}
-            className="ora-tacca"
-            style={{
-              left: `${(i / (ORE_MARCA.length - 1)) * 100}%`,
-              transform: i === 0 ? 'translateX(0)' : i === ORE_MARCA.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)'
-            }}
-          >
-            {ora}
-          </span>
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="ora-cella" style={{ flex: '1 1 0' }}>
+            <span className="ora-cella-inizio">{10 + i}</span>
+            {i === 7 && <span className="ora-cella-fine">18</span>}
+          </div>
         ))}
       </div>
 
