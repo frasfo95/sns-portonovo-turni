@@ -1,6 +1,7 @@
 import { nomeGiorno, dataBreve, iniziali } from '../utils/dates';
 
 const ORE_TURNO = [10, 11, 12, 13, 14, 15, 16, 17]; // segmenti di un'ora dalle 10 alle 18
+const CAPIENZA_MAX = 5;
 
 function orarioInMinuti(orario) {
   const [h, m] = orario.split(':').map(Number);
@@ -20,13 +21,6 @@ function coperturaOraria(confermati) {
   });
 }
 
-function coloreSegmento(presenti) {
-  if (presenti === 0) return 'var(--rosso-allerta)';
-  if (presenti >= 5) return 'var(--verde-sicurezza)';
-  if (presenti >= 3) return '#5FAE7C';
-  return 'var(--ambra-segnale)';
-}
-
 export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, onApri, onModifica, onElimina }) {
   const confermati = turni.filter((t) => t.stato === 'confermato');
   const riserve = turni.filter((t) => t.stato === 'riserva');
@@ -39,6 +33,7 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
 
   const etichettaStato = { scoperto: 'Scoperto', parziale: 'Copertura parziale', coperto: 'Coperto' }[stato];
   const mioTurno = turni.find((t) => t.userId?._id === utente?.id || t.userId === utente?.id);
+  const giornoPieno = segmenti.every((p) => p >= CAPIENZA_MAX);
 
   return (
     <div className="card giorno-card">
@@ -57,14 +52,19 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
         </div>
       )}
 
-      <div className="gauge" title="Copertura dalle 10:00 alle 18:00">
-        {segmenti.map((presenti, i) => (
-          <div
-            key={i}
-            className="gauge-segmento"
-            style={{ flex: 1, background: coloreSegmento(presenti) }}
-          />
-        ))}
+      <div className="gauge" title="Posti occupati (rosso) e liberi (verde) dalle 10:00 alle 18:00">
+        {segmenti.map((presenti, i) => {
+          const percentualeOccupata = Math.min(100, (presenti / CAPIENZA_MAX) * 100);
+          return (
+            <div key={i} className="gauge-segmento">
+              <div className="gauge-occupato" style={{ width: `${percentualeOccupata}%` }} />
+            </div>
+          );
+        })}
+      </div>
+      <div className="gauge-legenda">
+        <span><i className="pallino pallino-rosso" /> occupato</span>
+        <span><i className="pallino pallino-verde" /> libero</span>
       </div>
 
       {turni.length === 0 && <p className="giorno-vuoto">Nessuno ancora iscritto a questo turno.</p>}
@@ -106,8 +106,8 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
       ))}
 
       {!mioTurno && (
-        <button className={`btn-aggiungi-turno ${stato === 'coperto' ? 'pieno' : ''}`} onClick={onApri}>
-          + Segnati per questo turno
+        <button className={`btn-aggiungi-turno ${giornoPieno ? 'pieno' : ''}`} onClick={onApri}>
+          {giornoPieno ? '⏳ Segnati come riserva' : '+ Segnati per questo turno'}
         </button>
       )}
     </div>
