@@ -94,6 +94,7 @@ function calcolaFinestreLibere(turniConfermati, inizio, fine) {
     .filter(([a, b]) => b - a >= 15)
     .map(([a, b]) => ({ oraInizio: minutiInOrario(a), oraFine: minutiInOrario(b) }));
 }
+async function creaNotificaPerGestori(tipo, messaggio, userId) {
   const gestori = await User.find({ ruolo: 'gestore' });
   const notifiche = await Promise.all(
     gestori.map(g =>
