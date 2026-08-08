@@ -15,13 +15,21 @@ export default function TabBar({ utente, notificheNonLette }) {
         Calendario
       </button>
 
+      <button
+        className={attivo('/miei-turni') ? 'attivo' : ''}
+        onClick={() => navigate('/miei-turni')}
+      >
+        <span className="icona">📋</span>
+        I miei turni
+      </button>
+
       {utente?.ruolo === 'gestore' && (
         <>
           <button
             className={attivo('/gestore') ? 'attivo' : ''}
             onClick={() => navigate('/gestore')}
           >
-            <span className="icona">📋</span>
+            <span className="icona">📊</span>
             Riepilogo
           </button>
           <button
