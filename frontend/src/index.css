@@ -412,17 +412,13 @@ input:focus, textarea:focus { border-color: var(--blu-adriatico); outline: none;
   font-style: italic;
 }
 .ore-tacche {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
   margin: 4px 2px 14px;
 }
 .ora-cella {
   position: relative;
   height: 13px;
-  padding: 0;
-  border: none;
-  width: 12.5%;
 }
 .ora-cella-inizio {
   position: absolute;
