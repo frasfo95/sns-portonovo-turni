@@ -23,14 +23,17 @@ export default function Header({ sottotitolo }) {
             <small>{sottotitolo || 'GESTIONE TURNI SOCCORRITORI'}</small>
           </h1>
           {utente && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <button
                 onClick={() => setMostraAllerta(true)}
                 aria-label="Allerta equipaggio"
                 title="Allerta equipaggio"
-                style={{ background: 'transparent', fontSize: 20, padding: '4px 6px', lineHeight: 1 }}
+                style={{ background: 'transparent', padding: '2px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}
               >
-                🚨
+                <span style={{ fontSize: 20, lineHeight: 1 }}>🚨</span>
+                <span style={{ fontFamily: 'var(--font-orario)', fontSize: 8.5, color: '#9FC1D6', fontWeight: 600, letterSpacing: '0.02em' }}>
+                  App allerta<br />equipaggio
+                </span>
               </button>
               <button
                 onClick={handleEsci}
@@ -44,7 +47,7 @@ export default function Header({ sottotitolo }) {
       </header>
 
       {mostraAllerta && (
-        <div className="overlay" onClick={() => setMostraAllerta(false)}>
+        <div className="overlay overlay-centrato" onClick={() => setMostraAllerta(false)}>
           <div className="modale" onClick={(e) => e.stopPropagation()}>
             <h2>🚨 Allerta equipaggio</h2>
             <p className="sotto">Stai per uscire da questa app per aprire quella di allerta equipaggio.</p>
@@ -60,6 +63,12 @@ export default function Header({ sottotitolo }) {
               <div className="banner-titolo">Attiva le notifiche</div>
               Assicurati di aver dato il permesso per le notifiche a quell'app: altrimenti rischi di non
               ricevere un allarme in tempo.
+            </div>
+
+            <div className="banner-info">
+              <div className="banner-titolo">Registrati di nuovo</div>
+              Alla prima apertura dovrai registrarti anche lì: usa lo <b>stesso nome e lo stesso PIN</b> che usi
+              in questa app, per riconoscerti più facilmente in entrambe.
             </div>
 
             <div className="modale-azioni">
