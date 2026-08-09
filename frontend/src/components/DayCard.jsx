@@ -140,12 +140,16 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
       </div>
 
       <div className="ore-tacche">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="ora-cella">
-            <span className="ora-cella-inizio">{10 + i}</span>
-            {i === 7 && <span className="ora-cella-fine">18</span>}
-          </div>
-        ))}
+        {Array.from({ length: 9 }).map((_, i) => {
+          const ora = 10 + i;
+          const posizione = (i / 8) * 100;
+          const transform = i === 0 ? 'translateX(0)' : i === 8 ? 'translateX(-100%)' : 'translateX(-50%)';
+          return (
+            <span key={ora} className="ora-tacca" style={{ left: `${posizione}%`, transform }}>
+              {ora}
+            </span>
+          );
+        })}
       </div>
 
       {riserve.length > 0 && (
