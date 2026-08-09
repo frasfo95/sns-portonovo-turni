@@ -412,29 +412,17 @@ input:focus, textarea:focus { border-color: var(--blu-adriatico); outline: none;
   font-style: italic;
 }
 .ore-tacche {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  margin: 4px 2px 14px;
-}
-.ora-cella {
   position: relative;
   height: 13px;
+  margin: 4px 2px 14px;
 }
-.ora-cella-inizio {
+.ora-tacca {
   position: absolute;
-  left: 0;
   top: 0;
   font-family: var(--font-orario);
   font-size: 9.5px;
   color: var(--grigio-tenue);
-}
-.ora-cella-fine {
-  position: absolute;
-  right: 0;
-  top: 0;
-  font-family: var(--font-orario);
-  font-size: 9.5px;
-  color: var(--grigio-tenue);
+  white-space: nowrap;
 }
 .riserva-pill {
   display: flex;
