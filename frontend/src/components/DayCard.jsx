@@ -105,7 +105,7 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
                     );
                   }
                   const t = s.turno;
-                  const puoModificare = eMio(t) || utente?.ruolo === 'gestore';
+                  const mio = eMio(t);
                   return (
                     <div key={i} className="corsia-segmento occupato" style={{ flex: `${durata} 1 0` }}>
                       <span className="corsia-nome">{t.userId?.nome}</span>
@@ -119,7 +119,7 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
                             📝
                           </button>
                         )}
-                        {puoModificare && (
+                        {mio && (
                           <>
                             <button className="corsia-icona-mini" aria-label="Modifica turno" onClick={() => onModifica(t)}>✎</button>
                             <button className="corsia-icona-mini" aria-label="Elimina turno" onClick={() => onElimina(t)}>✕</button>
@@ -139,14 +139,14 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
         })}
       </div>
 
-      <table className="ore-tacche"><tbody><tr>
+      <div className="ore-tacche">
         {Array.from({ length: 8 }).map((_, i) => (
-          <td key={i} className="ora-cella">
+          <div key={i} className="ora-cella">
             <span className="ora-cella-inizio">{10 + i}</span>
             {i === 7 && <span className="ora-cella-fine">18</span>}
-          </td>
+          </div>
         ))}
-      </tr></tbody></table>
+      </div>
 
       {riserve.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
@@ -158,7 +158,7 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
               <span style={{ flex: 1, fontSize: 12.5, color: '#A8701D' }}>
                 {t.userId?.nome} · in lista d'attesa #{t.ordineRiserva} ({t.oraInizio}–{t.oraFine})
               </span>
-              {(eMio(t) || utente?.ruolo === 'gestore') && (
+              {eMio(t) && (
                 <span style={{ display: 'flex', gap: 4 }}>
                   <button className="icona-btn" onClick={() => onModifica(t)} aria-label="Modifica">✎</button>
                   <button className="icona-btn" onClick={() => onElimina(t)} aria-label="Elimina">✕</button>
