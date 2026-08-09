@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
 import TabBar from '../components/TabBar';
 import WeekNav from '../components/WeekNav';
+import ShiftModal from '../components/ShiftModal';
 import { inizioSettimana, giorniSettimana, formatoData, nomeGiorno, dataBreve } from '../utils/dates';
 
 const COLORI_STATO = {
@@ -19,6 +20,7 @@ export default function Gestore() {
   const [giornateSpeciali, setGiornateSpeciali] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
   const [formManifestazione, setFormManifestazione] = useState(null); // { dataStr, titolo, descrizione }
+  const [modaleTurno, setModaleTurno] = useState(null); // { turnoEsistente }
 
   const giorni = giorniSettimana(lunedi);
   const domenica = giorni[6];
@@ -54,6 +56,18 @@ export default function Gestore() {
   async function eliminaManifestazione(id) {
     if (!window.confirm('Rimuovere l\'etichetta di questa giornata?')) return;
     await api.delete(`/api/giornate-speciali/${id}`);
+    carica();
+  }
+
+  async function handleSalvaTurno(payload) {
+    await api.put(`/api/turni/${modaleTurno.turnoEsistente._id}`, payload);
+    setModaleTurno(null);
+    carica();
+  }
+
+  async function handleEliminaTurno(turno) {
+    if (!window.confirm(`Eliminare il turno di ${turno.userId?.nome} del ${turno.data} (${turno.oraInizio}-${turno.oraFine})?`)) return;
+    await api.delete(`/api/turni/${turno._id}`);
     carica();
   }
 
@@ -135,6 +149,11 @@ export default function Gestore() {
                       <div className="turno-info">
                         <div className="turno-nome">{t.userId?.nome}</div>
                         <div className="turno-orario">{t.oraInizio} – {t.oraFine}</div>
+                        {t.note && <div className="turno-nota">"{t.note}"</div>}
+                      </div>
+                      <div className="turno-azioni">
+                        <button className="icona-btn" aria-label="Modifica" onClick={() => setModaleTurno({ turnoEsistente: t })}>✎</button>
+                        <button className="icona-btn" aria-label="Elimina" onClick={() => handleEliminaTurno(t)}>✕</button>
                       </div>
                     </div>
                   ))}
@@ -149,6 +168,10 @@ export default function Gestore() {
                               {t.userId?.nome} <span className="turno-tag-riserva">RISERVA #{t.ordineRiserva}</span>
                             </div>
                             <div className="turno-orario">{t.oraInizio} – {t.oraFine}</div>
+                          </div>
+                          <div className="turno-azioni">
+                            <button className="icona-btn" aria-label="Modifica" onClick={() => setModaleTurno({ turnoEsistente: t })}>✎</button>
+                            <button className="icona-btn" aria-label="Elimina" onClick={() => handleEliminaTurno(t)}>✕</button>
                           </div>
                         </div>
                       ))}
@@ -188,6 +211,16 @@ export default function Gestore() {
             </div>
           </div>
         </div>
+      )}
+
+      {modaleTurno && (
+        <ShiftModal
+          dataStr={modaleTurno.turnoEsistente.data}
+          dataLeggibile={`${nomeGiorno(new Date(modaleTurno.turnoEsistente.data + 'T00:00:00'))} ${dataBreve(new Date(modaleTurno.turnoEsistente.data + 'T00:00:00'))} — ${modaleTurno.turnoEsistente.userId?.nome}`}
+          turnoEsistente={modaleTurno.turnoEsistente}
+          onChiudi={() => setModaleTurno(null)}
+          onSalva={handleSalvaTurno}
+        />
       )}
 
       <TabBar utente={utente} />
