@@ -95,11 +95,14 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
             <div key={idx}>
               <div className="corsia-riga">
                 {segmenti.map((s, i) => {
+                  const sinistra = ((s.inizio - ORARIO_INIZIO) / (ORARIO_FINE - ORARIO_INIZIO)) * 100;
+                  const larghezza = ((s.fine - s.inizio) / (ORARIO_FINE - ORARIO_INIZIO)) * 100;
                   const durata = s.fine - s.inizio;
+
                   if (s.tipo === 'libero') {
                     const mostraEtichetta = durata >= 90;
                     return (
-                      <div key={i} className="corsia-segmento libero" style={{ flex: `${durata} 1 0` }}>
+                      <div key={i} className="corsia-segmento libero" style={{ left: `${sinistra}%`, width: `${larghezza}%` }}>
                         {mostraEtichetta && <span className="corsia-nome-libero">Libero</span>}
                       </div>
                     );
@@ -107,7 +110,7 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
                   const t = s.turno;
                   const mio = eMio(t);
                   return (
-                    <div key={i} className="corsia-segmento occupato" style={{ flex: `${durata} 1 0` }}>
+                    <div key={i} className="corsia-segmento occupato" style={{ left: `${sinistra}%`, width: `${larghezza}%` }}>
                       <span className="corsia-nome">{t.userId?.nome}</span>
                       <span className="corsia-azioni">
                         {t.note && (
