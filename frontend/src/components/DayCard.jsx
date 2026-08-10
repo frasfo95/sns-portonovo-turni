@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { nomeGiorno, dataBreve, iniziali } from '../utils/dates';
+import { nomeGiorno, dataBreve, iniziali, formatoData } from '../utils/dates';
 
 const ORARIO_INIZIO = 10 * 60; // 10:00 in minuti
 const ORARIO_FINE = 18 * 60;   // 18:00 in minuti
@@ -72,7 +72,7 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
   }
 
   const adesso = new Date();
-  const oggiStr = adesso.toISOString().slice(0, 10);
+  const oggiStr = formatoData(adesso);
   const minutiAttuali = adesso.getHours() * 60 + adesso.getMinutes();
   const ePassato = dataStr < oggiStr || (dataStr === oggiStr && minutiAttuali >= ORARIO_FINE);
   const eOggi = dataStr === oggiStr && !ePassato;
