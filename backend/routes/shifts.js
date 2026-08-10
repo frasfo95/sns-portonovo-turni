@@ -105,10 +105,14 @@ async function creaNotificaPerGestori(tipo, messaggio, userId) {
   return notifiche;
 }
 
+function dataOggiItalia() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' }); // formato YYYY-MM-DD
+}
+
 // GET /api/turni/miei  → tutti i turni futuri (da oggi in poi) dell'utente loggato
 router.get('/miei', richiedeLogin, async (req, res) => {
   try {
-    const oggi = new Date().toISOString().slice(0, 10);
+    const oggi = dataOggiItalia();
     const turni = await Shift.find({ userId: req.utente.id, data: { $gte: oggi } })
       .sort({ data: 1, oraInizio: 1 });
     res.json(turni);
