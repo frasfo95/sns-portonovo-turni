@@ -287,9 +287,10 @@ input:focus, textarea:focus { border-color: var(--blu-adriatico); outline: none;
   margin: 0 auto;
 }
 .week-nav-label {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 600;
+  font-family: var(--font-orario);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   color: var(--blu-profondo);
   text-align: center;
 }
@@ -307,6 +308,21 @@ input:focus, textarea:focus { border-color: var(--blu-adriatico); outline: none;
 .giorno-card {
   margin-top: 14px;
   padding: 16px;
+}
+.giorno-card--oggi {
+  border: 2px solid transparent;
+  background-image: linear-gradient(white, white), linear-gradient(135deg, var(--blu-adriatico), var(--blu-profondo));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+.giorno-card--vuoto {
+  border: 2px solid transparent;
+  background-image: linear-gradient(white, white), linear-gradient(135deg, #E8897E, var(--rosso-allerta));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+.giorno-card--passato {
+  opacity: 0.6;
 }
 .giorno-header {
   display: flex;
