@@ -71,8 +71,15 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
     return turno.userId?._id === utente?.id || turno.userId === utente?.id;
   }
 
+  const oggiStr = new Date().toISOString().slice(0, 10);
+  const eOggi = dataStr === oggiStr;
+  const ePassato = dataStr < oggiStr;
+  const eVuoto = stato === 'scoperto' && !eOggi && !ePassato;
+
+  const classeGiorno = eOggi ? 'giorno-card--oggi' : eVuoto ? 'giorno-card--vuoto' : ePassato ? 'giorno-card--passato' : '';
+
   return (
-    <div className="card giorno-card">
+    <div className={`card giorno-card ${classeGiorno}`}>
       <div className="giorno-header">
         <div>
           <div className="giorno-nome">{nomeGiorno(date)}</div>

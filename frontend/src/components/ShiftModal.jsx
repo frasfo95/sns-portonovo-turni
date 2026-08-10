@@ -17,6 +17,11 @@ export default function ShiftModal({ dataStr, dataLeggibile, turnoEsistente, sce
     const inizio = tipo === 'completo' ? '10:00' : oraInizio;
     const fine = tipo === 'completo' ? '18:00' : oraFine;
 
+    if (inizio < '10:00' || fine > '18:00') {
+      setErrore('L\'orario deve restare compreso tra le 10:00 e le 18:00');
+      return;
+    }
+
     if (inizio >= fine) {
       setErrore('L\'orario di fine deve essere successivo a quello di inizio');
       return;
@@ -112,18 +117,18 @@ export default function ShiftModal({ dataStr, dataLeggibile, turnoEsistente, sce
           <div className="riga-orari" style={{ marginBottom: 14 }}>
             <div className="campo">
               <label>Dalle</label>
-              <input type="time" value={oraInizio} min="10:00" max="18:00" onChange={(e) => setOraInizio(e.target.value)} />
+              <input type="time" value={oraInizio} min="10:00" max="18:00" step="900" onChange={(e) => setOraInizio(e.target.value)} />
             </div>
             <div className="campo">
               <label>Alle</label>
-              <input type="time" value={oraFine} min="10:00" max="18:00" onChange={(e) => setOraFine(e.target.value)} />
+              <input type="time" value={oraFine} min="10:00" max="18:00" step="900" onChange={(e) => setOraFine(e.target.value)} />
             </div>
           </div>
         )}
 
         <div className="campo">
           <label>Note (facoltativo)</label>
-          <textarea rows={2} placeholder="Es. Disponibile anche per pattugliamento" value={note} onChange={(e) => setNote(e.target.value)} />
+          <textarea rows={2} placeholder="Eventuali note per questo turno" value={note} onChange={(e) => setNote(e.target.value)} />
         </div>
 
         <div className="modale-azioni">
