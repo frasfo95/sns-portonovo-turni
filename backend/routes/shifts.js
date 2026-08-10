@@ -150,6 +150,9 @@ router.post('/', richiedeLogin, async (req, res) => {
     if (!inizio || !fine || orarioInMinuti(inizio) >= orarioInMinuti(fine)) {
       return res.status(400).json({ errore: 'Orario non valido' });
     }
+    if (orarioInMinuti(inizio) < orarioInMinuti(TURNO_COMPLETO_INIZIO) || orarioInMinuti(fine) > orarioInMinuti(TURNO_COMPLETO_FINE)) {
+      return res.status(400).json({ errore: 'L\'orario deve restare compreso tra le 10:00 e le 18:00' });
+    }
 
     // Un utente non può iscriversi due volte nella stessa data
     const giaIscritto = await Shift.findOne({ data, userId: utenteId });
@@ -210,6 +213,12 @@ router.put('/:id', richiedeLogin, async (req, res) => {
     }
 
     const { oraInizio, oraFine, note } = req.body;
+    if (oraInizio && (orarioInMinuti(oraInizio) < orarioInMinuti(TURNO_COMPLETO_INIZIO))) {
+      return res.status(400).json({ errore: 'L\'orario deve restare compreso tra le 10:00 e le 18:00' });
+    }
+    if (oraFine && (orarioInMinuti(oraFine) > orarioInMinuti(TURNO_COMPLETO_FINE))) {
+      return res.status(400).json({ errore: 'L\'orario deve restare compreso tra le 10:00 e le 18:00' });
+    }
     if (oraInizio) turno.oraInizio = oraInizio;
     if (oraFine) turno.oraFine = oraFine;
     if (note !== undefined) turno.note = note;
