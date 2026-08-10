@@ -16,6 +16,14 @@ export default function Calendar() {
   const [caricamento, setCaricamento] = useState(true);
   const [modale, setModale] = useState(null); // { dataStr, turnoEsistente? }
   const [avvisoRiserva, setAvvisoRiserva] = useState('');
+  const [, forzaAggiornamentoOrologio] = useState(0);
+
+  // Ogni minuto forziamo un nuovo render, così lo stato "oggi/passato" dei giorni
+  // resta sempre corretto anche se l'app resta aperta a cavallo di mezzanotte o delle 18:00
+  useEffect(() => {
+    const id = setInterval(() => forzaAggiornamentoOrologio((n) => n + 1), 60000);
+    return () => clearInterval(id);
+  }, []);
 
   const giorni = giorniSettimana(lunedi);
   const domenica = giorni[6];
