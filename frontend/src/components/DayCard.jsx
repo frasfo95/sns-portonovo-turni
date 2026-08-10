@@ -71,12 +71,15 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
     return turno.userId?._id === utente?.id || turno.userId === utente?.id;
   }
 
-  const oggiStr = new Date().toISOString().slice(0, 10);
-  const eOggi = dataStr === oggiStr;
-  const ePassato = dataStr < oggiStr;
+  const adesso = new Date();
+  const oggiStr = adesso.toISOString().slice(0, 10);
+  const minutiAttuali = adesso.getHours() * 60 + adesso.getMinutes();
+  const ePassato = dataStr < oggiStr || (dataStr === oggiStr && minutiAttuali >= ORARIO_FINE);
+  const eOggi = dataStr === oggiStr && !ePassato;
   const eVuoto = stato === 'scoperto' && !eOggi && !ePassato;
 
   const classeGiorno = eOggi ? 'giorno-card--oggi' : eVuoto ? 'giorno-card--vuoto' : ePassato ? 'giorno-card--passato' : '';
+  const puoSegnarsi = !ePassato || utente?.ruolo === 'gestore';
 
   return (
     <div className={`card giorno-card ${classeGiorno}`}>
@@ -183,10 +186,13 @@ export default function DayCard({ date, dataStr, turni, giornoSpeciale, utente, 
         </div>
       )}
 
-      {!mioTurno && (
+      {!mioTurno && puoSegnarsi && (
         <button className={`btn-aggiungi-turno ${tuttoPieno ? 'pieno' : ''}`} onClick={onApri}>
           {tuttoPieno ? '⏳ Segnati come riserva' : '+ Segnati per questo turno'}
         </button>
+      )}
+      {!mioTurno && !puoSegnarsi && (
+        <p className="giorno-vuoto" style={{ marginTop: 10 }}>Giornata passata — non è più possibile segnarsi.</p>
       )}
     </div>
   );
